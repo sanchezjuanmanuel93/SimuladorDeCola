@@ -1,0 +1,1 @@
+java -jar "D:\Juanma\facultad\4to\Simulacion\SimuladorDeCola\Simulador de Cola\Simulador de Cola.jar"
