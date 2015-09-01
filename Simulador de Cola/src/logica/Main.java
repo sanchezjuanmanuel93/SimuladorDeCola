@@ -58,7 +58,6 @@ public class Main {
 		 
 		Scanner s = new Scanner(System.in);
 		
-		ventana.setVisible(true);
 	    cantidad_eventos = 2; // numero de eventos posibles (Arribo, Partida)
 	    /*
 	    System.out.println("Ingrese el tiempo entre arribos:");
@@ -83,6 +82,8 @@ public class Main {
 	    distribucionTiempoDeServicio = 
 	    		new DistribucionExponencial(lambda_tiempo_servicio);
 	    
+
+		ventana.setVisible(true);
 	    //parametros de entrada
 
 	    System.out.println("Sistema de cola con una servidor\n\n");
