@@ -2,7 +2,11 @@ package logica;
 
 import java.awt.Desktop;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.List;
+
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -11,58 +15,82 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 public class Archivos {
 
+	private static Workbook libro = new HSSFWorkbook();
+	private static final String rutaArchivo = System.getProperty("user.home")+"/SimulacionDecola.xls";
+	private static File archivoXLS = new File(rutaArchivo);
+	private static Sheet hoja = libro.createSheet("Hoja 1");
+	private static String[] encabezado = {"En tiempo","Promedio clientes en cola", "Tiempo medio clientes en cola",  "Factor Servicio", "Promedio clientes en sistema", "Tiempo medio clientes en sistema"};
+	private static int contador;
 	
-	public static boolean escribirArchivo(int fila, int columna){
-			
-		
-		
-		return true;
+	public static void setContador(int cont){
+		contador = cont;
 	}
 	
-	public static void main(String[] args) throws Exception{
-        /*La ruta donde se creará el archivo*/
-        String rutaArchivo = System.getProperty("user.home")+"/ejemploExcelJava.xls";
-        /*Se crea el objeto de tipo File con la ruta del archivo*/
-        File archivoXLS = new File(rutaArchivo);
-        /*Si el archivo existe se elimina*/
-        if(archivoXLS.exists()) archivoXLS.delete();
-        /*Se crea el archivo*/
-        archivoXLS.createNewFile();
-        
-        /*Se crea el libro de excel usando el objeto de tipo Workbook*/
-        Workbook libro = new HSSFWorkbook();
-        /*Se inicializa el flujo de datos con el archivo xls*/
-        FileOutputStream archivo = new FileOutputStream(archivoXLS);
-        
-        /*Utilizamos la clase Sheet para crear una nueva hoja de trabajo dentro del libro que creamos anteriormente*/
-        Sheet hoja = libro.createSheet("Mi hoja de trabajo 1");
-        
-        /*Hacemos un ciclo para inicializar los valores de 10 filas de celdas*/
-        for(int f=0;f<10;f++){
-            /*La clase Row nos permitirá crear las filas*/
-            Row fila = hoja.createRow(f);
-            
-            /*Cada fila tendrá 5 celdas de datos*/
-            for(int c=0;c<5;c++){
-                /*Creamos la celda a partir de la fila actual*/
-                Cell celda = fila.createCell(c);
-                
-                /*Si la fila es la número 0, estableceremos los encabezados*/
-                if(f==0){
-                    celda.setCellValue("Encabezado #"+c);
-                }else{
-                    /*Si no es la primera fila establecemos un valor*/
-                    celda.setCellValue("Valor celda "+c+","+f);
-                }
-            }
-        }
-        
-        /*Escribimos en el libro*/
-        libro.write(archivo);
-        /*Cerramos el flujo de datos*/
-        archivo.close();
-        /*Y abrimos el archivo con la clase Desktop*/
-        Desktop.getDesktop().open(archivoXLS);
+	public static void crearArchivo(){
+		if(archivoXLS.exists()) archivoXLS.delete();
+        try {
+			archivoXLS.createNewFile();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static void cerrarArchivo(){
+        FileOutputStream archivo;
+		try {
+			archivo = new FileOutputStream(archivoXLS);
+	        libro.write(archivo);
+	        Desktop.getDesktop().open(archivoXLS);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static void escribirArchivo(List<Float> datos){
+		
+		
+		try{
+	        
+	        
+	        /*Utilizamos la clase Sheet para crear una nueva hoja de trabajo dentro del libro que creamos anteriormente*/
+	        
+	        
+	        /*Hacemos un ciclo para inicializar los valores de 10 filas de celdas*/
+	        
+	            /*La clase Row nos permitirá crear las filas*/
+	        	int f = contador;
+	            Row fila = hoja.createRow(f);
+	            
+	            /*Cada fila tendrá 5 celdas de datos*/
+	            for(int c=0;c<encabezado.length;c++){
+	                Cell celda = fila.createCell(c);	                
+	                if(f==0){
+	                	hacerEncabezado();
+	                }else{
+	                    celda.setCellValue(datos.get(c));
+	                }
+	            }
+	        
+	        /*Escribimos en el libro*/
+	        
+	        /*Cerramos el flujo de datos*/
+
+		}catch(Exception e){
+			System.out.println("error: "+e.getMessage());
+		}
     }
+	
+	public static void hacerEncabezado(){
+		int i  = 0 ;
+		Row fila = hoja.createRow(0);
+		while(i < encabezado.length){
+			Cell celda = fila.createCell(i);
+			celda.setCellValue(encabezado[i]);	
+			i++;
+		}
+	}
+
 	
 }

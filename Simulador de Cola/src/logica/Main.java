@@ -1,6 +1,8 @@
 package logica;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 import ventanas.AnimacionSimulacion;
@@ -18,6 +20,7 @@ public class Main {
 		return _instance;
 	}
 	*/
+			 static int contador = 0;
 			 static int siguiente_tipo_evento = 0, 
 			 cantidad_clientes_atendidos = 0, 
 			 cantidad_clientes_atendidos_requeridos = 0, 
@@ -57,7 +60,7 @@ public class Main {
 	{
 		 
 		Scanner s = new Scanner(System.in);
-		
+		Archivos.crearArchivo();
 	    cantidad_eventos = 2; // numero de eventos posibles (Arribo, Partida)
 	    /*
 	    System.out.println("Ingrese el tiempo entre arribos:");
@@ -120,9 +123,11 @@ public class Main {
 	        delay_entre_iteraciones = ventana.getDelay();
 	        Thread.sleep((long) delay_entre_iteraciones);
 	    }
-
+	    Archivos.cerrarArchivo();
 	    //aca hay que guardar los valores de x e y en archivos .txt de clientes en cola 
 	    // y de ocupacion del servidor
+	
+	
 	}
 	
 	private static void programarPartida() 
@@ -277,7 +282,7 @@ public class Main {
 	    System.out.println("Cliente arriba en "+tiempo_simulacion);
 	}
 	
-	public static void actualizar_Acumuladores_Areas()  
+	public static void actualizar_Acumuladores_Areas2() 
 	//actualizar acumuladores de area
 	
 	{
@@ -296,6 +301,59 @@ public class Main {
 
 		area_estado_servidor += estado_servidor * tiempo_desde_ultimo_evento;
 		
-}
+	}
+	
+	public static void actualizar_Acumuladores_Areas()
+
+	//actualizar acumuladores de area
+
+	{
+
+	Float tiempo_desde_ultimo_evento;
+
+	// calcular tiempo desde el ultimo evento y actualizar ocurrencia_ultimo_evento
+
+	tiempo_desde_ultimo_evento = tiempo_simulacion - ocurrencia_ultimo_evento;
+
+	ocurrencia_ultimo_evento = tiempo_simulacion;
+
+	//actualizar area de numero de clientes en cola
+
+	area_numero_clientes_en_cola += cantidad_clientes_en_cola * tiempo_desde_ultimo_evento;
+
+	float cantidad_clientes_en_cola_promedio = area_numero_clientes_en_cola / tiempo_simulacion;
+
+	float tiempo_medio_clientes_en_cola = area_numero_clientes_en_cola / cantidad_clientes_atendidos;
+
+	float cantidad_clientes_en_servicio_promedio = area_estado_servidor / tiempo_simulacion; //ocupacion del servidor
+
+	float tiempo_medio_estado_servidor = area_estado_servidor / cantidad_clientes_atendidos;
+
+	float cantidad_clientes_en_sistema_promedio = cantidad_clientes_en_cola_promedio+cantidad_clientes_en_servicio_promedio;
+
+	float tiempo_en_sistema_promedio = tiempo_medio_clientes_en_cola + tiempo_medio_estado_servidor;
+
+	System.out.println("En tiempo: "+tiempo_simulacion);
+
+	System.out.println("Promedio clientes en cola: "+cantidad_clientes_en_cola_promedio);
+
+	System.out.println("Tiempo medio clientes en cola: "+tiempo_medio_clientes_en_cola);
+
+	//actualizar area de ocupacion del servidor
+
+	area_estado_servidor += estado_servidor * tiempo_desde_ultimo_evento;
+
+	System.out.println("Factor Servicio: "+ cantidad_clientes_en_servicio_promedio);
+
+	System.out.println("Promedio clientes en sistema: "+cantidad_clientes_en_sistema_promedio);
+
+	System.out.println("Tiempo medio clientes en sistema: "+tiempo_en_sistema_promedio);
+	
+	//List<Float> datos = new ArrayList<Float>{tiempo_simulacion,cantidad_clientes_en_cola_promedio};
+	List<Float> datos = Arrays.asList(tiempo_simulacion,cantidad_clientes_en_cola_promedio,tiempo_medio_clientes_en_cola,cantidad_clientes_en_servicio_promedio,cantidad_clientes_en_sistema_promedio,tiempo_en_sistema_promedio);
+	Archivos.escribirArchivo(datos);
+	Archivos.setContador(contador);
+	contador+=1;
+	}
 
 }
