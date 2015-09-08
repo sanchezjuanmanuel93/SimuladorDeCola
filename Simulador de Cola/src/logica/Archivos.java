@@ -18,7 +18,8 @@ public class Archivos {
 	private static Workbook libro = new HSSFWorkbook();
 	private static final String rutaArchivo = System.getProperty("user.home")+"/SimulacionDecola.xls";
 	private static File archivoXLS = new File(rutaArchivo);
-	private static Sheet hoja = libro.createSheet("Hoja 1");
+	private static int contHoja = 0;
+	private static Sheet hoja;
 	private static String[] encabezado = {"En tiempo","Promedio clientes en cola", "Tiempo medio clientes en cola",  "Factor Servicio", "Promedio clientes en sistema", "Tiempo medio clientes en sistema"};
 	private static int contador;
 	
@@ -27,7 +28,8 @@ public class Archivos {
 	}
 	
 	public static void crearArchivo(){
-		if(archivoXLS.exists()) archivoXLS.delete();
+
+		if(archivoXLS.exists())  hoja = libro.createSheet("Hoja "+contHoja);;
         try {
 			archivoXLS.createNewFile();
 		} catch (IOException e) {
